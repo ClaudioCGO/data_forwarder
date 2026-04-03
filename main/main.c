@@ -23,7 +23,7 @@ void init_inmp441(void) {
     // 2. Configuração do padrão I2S (Standard)
     i2s_std_config_t std_cfg = {
         .clk_cfg = I2S_STD_CLK_DEFAULT_CONFIG(SAMPLE_RATE),
-        .slot_cfg = I2S_STD_MSB_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_32BIT, I2S_SLOT_MODE_MONO),
+        .slot_cfg = I2S_STD_MSB_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_32BIT, I2S_SLOT_MODE_STEREO), // Mude para STEREO,
         .gpio_cfg = {
             .mclk = I2S_GPIO_UNUSED,
             .bclk = I2S_SCK,
@@ -49,19 +49,21 @@ void audio_capture_task(void *pvParameters) {
         if (ret == ESP_OK) {
             size_t samples_read = bytes_read / sizeof(int32_t);
             
-            for (size_t i = 0; i < samples_read; i++) {
-                /**
-                 * CONVERSÃO IMPORTANTE:
-                 * O INMP441 envia 24 bits dentro de um frame de 32 bits.
-                 * Deslocamos 14 bits para a direita (>> 14) para:
-                 * 1. Manter o sinal (positivo/negativo).
-                 * 2. Ajustar a amplitude para 16-bit PCM sem 'clipar' 
-                 * sons fortes como CLAP e KNOCK.
-                 */
-                int16_t sample16 = (int16_t)(raw_buf[i] >> 14);
+            for (size_t i = 0; i < samples_read; i+=2) {
                 
+                // Lê os dados brutos dos dois microfones
+                int32_t raw_L = raw_buf[i];
+                int32_t raw_R = raw_buf[i+1];
+                
+                // Converte ambos para 16 bits (usando um shift de 14 para evitar clipping)
+                int16_t sample_L = (int16_t)(raw_L >> 14);
+                int16_t sample_R = (int16_t)(raw_R >> 14);
+
+                // Soma e faz a média dos dois microfones (Downmix para Mono)
+                int16_t mixed_sample = (sample_L + sample_R) / 2;
+               
                 // O Data Forwarder espera um valor por linha
-                printf("%d\n", sample16);
+                printf("%d\n", mixed_sample);
             }
         }
         // Pequena pausa para não travar o watchdog (opcional dependendo da prioridade)
