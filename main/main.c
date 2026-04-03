@@ -55,19 +55,19 @@ void audio_capture_task(void *pvParameters) {
                 int32_t raw_L = raw_buf[i];
                 int32_t raw_R = raw_buf[i+1];
                 
-                // Converte ambos para 16 bits (usando um shift de 14 para evitar clipping)
-                int16_t sample_L = (int16_t)(raw_L >> 14);
-                int16_t sample_R = (int16_t)(raw_R >> 14);
+                // Converte ambos para 16 bits (usando um shift de 16 para evitar clipping)
+                int16_t sample_L = (int16_t)(raw_L >> 16);
+                int16_t sample_R = (int16_t)(raw_R >> 16);
 
                 // Soma e faz a média dos dois microfones (Downmix para Mono)
-                int16_t mixed_sample = (sample_L + sample_R) / 2;
+                int16_t mixed_sample = (sample_L / 2) + (sample_R / 2);
                
                 // O Data Forwarder espera um valor por linha
                 printf("%d\n", mixed_sample);
             }
         }
         // Pequena pausa para não travar o watchdog (opcional dependendo da prioridade)
-        vTaskDelay(pdMS_TO_TICKS(1));
+        // vTaskDelay(pdMS_TO_TICKS(1));
     }
     free(raw_buf);
 }
