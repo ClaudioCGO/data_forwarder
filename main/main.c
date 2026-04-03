@@ -33,7 +33,7 @@ void init_inmp441(void) {
         },
     };
 
-    ESP_ERROR_CHECK(i2s_channel_init_std_pulse(rx_chan, &std_cfg));
+    ESP_ERROR_CHECK(i2s_channel_init_std_mode(rx_chan, &std_cfg));
     ESP_ERROR_CHECK(i2s_channel_enable(rx_chan));
     ESP_LOGI(TAG, "INMP441 pronto. Sample Rate: %dHz", SAMPLE_RATE);
 }
