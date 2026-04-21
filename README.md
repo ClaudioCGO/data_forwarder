@@ -2,7 +2,7 @@
 
 Este projeto implementa a coleta de áudio estéreo com downmix para mono, utilizando dois microfones **INMP441** e um **ESP32-S3** via **ESP-IDF v5.5.3**. O firmware é otimizado para o envio de dados via Serial para o **Edge Impulse Data Forwarder**.
 
-## 📋 Características Técnicas
+## Características Técnicas
 * **Hardware:** 2x Microfones I2S INMP441.
 * **Frequência de Amostragem:** 16.000 Hz.
 * **Processamento:** Leitura em Estéreo -> Conversão PCM 16-bit -> Downmix para Mono.
@@ -10,7 +10,7 @@ Este projeto implementa a coleta de áudio estéreo com downmix para mono, utili
 
 ---
 
-## 🔧 Esquema de Ligação (Wiring)
+## Esquema de Ligação (Wiring)
 
 Ambos os microfones compartilham o barramento, diferenciando-se pelo pino **L/R**.
 
@@ -25,7 +25,7 @@ Ambos os microfones compartilham o barramento, diferenciando-se pelo pino **L/R*
 
 ---
 
-## ⚠️ Pontos de Atenção para o sucesso total
+## Pontos de Atenção
 
 ### 1. Baud Rate do Monitor Serial
 Por padrão, o ESP-IDF usa 115200. No entanto, enviar 16.000 números por segundo via `printf` pode sobrecarregar a largura de banda da serial e causar atrasos.
@@ -55,7 +55,7 @@ Certifique-se de que esses pinos na sua placa ESP32-S3 não conflitem com memór
 
 ---
 
-## ✅ Como validar se o dado está bom no Edge Impulse
+## Como validar se o dado está bom no Edge Impulse
 
 Após conectar o dispositivo ao seu projeto no Edge Impulse Studio, realize os seguintes testes na aba **Data Acquisition**:
 
@@ -65,7 +65,7 @@ Após conectar o dispositivo ao seu projeto no Edge Impulse Studio, realize os s
 
 ---
 
-## 🚀 Como rodar
+## Como rodar
 
 1. Compile e grave o firmware:
    ```bash
